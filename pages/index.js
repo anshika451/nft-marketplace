@@ -15,17 +15,26 @@ export default function Home() {
   const [nfts, setNfts] = useState([])
   const [loadingState, setLoadingState] = useState('not-loaded')
   useEffect(() => {
-    loadNFTs()
+
+      loadNFTs();
   }, [])
-  async function loadNFTs() {    
+  async function loadNFTs() {
+    // const loadingState = "loaded";
     const provider = new ethers.providers.JsonRpcProvider()
     const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
     const marketContract = new ethers.Contract(nftmarketaddress, Market.abi, provider)
-    const data = await marketContract.fetchMarketItems()
     
-    const items = await Promise.all(data.map(async i => {
+    const data = await marketContract.fetchMarketItems()
+    console.log("data",data);
+    // const promiseArr;
+    const items = await Promise.all(
+      data.map(async i => {
       const tokenUri = await tokenContract.tokenURI(i.tokenId)
-      const meta = await axios.get(tokenUri)
+      console.log("uri",tokenUri);
+      let meta;
+      try{
+
+      meta = await axios.get(tokenUri)
       let price = ethers.utils.formatUnits(i.price.toString(), 'ether')
       let item = {
         price,
@@ -36,11 +45,21 @@ export default function Home() {
         name: meta.data.name,
         description: meta.data.description,
       }
-      return item
+      return item}
+      catch(err)
+      {
+        console.log("err",err);
+        // loadingState="not-loaded";
+
+      }
     }))
+    // Todo: remove below line
+    // items=[]
     setNfts(items)
     setLoadingState('loaded') 
   }
+    
+
 
   async function buyNft(nft) {
     const web3Modal = new Web3Modal()

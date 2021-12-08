@@ -4,7 +4,25 @@ import { create as ipfsHttpClient } from 'ipfs-http-client'
 import { useRouter } from 'next/router'
 import Web3Modal from 'web3modal'
 
-const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
+// const ipfsClient = require('ipfs-http-client')
+
+const projectId = '220NHIwsv7Jf0hifyqt7hFZykIU'
+const projectSecret = '8d5d7136ad0b941aa3c201c4dd222daa'
+const auth =
+  'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64')
+
+const client = ipfsHttpClient({
+  host: 'ipfs.infura.io',
+  port: 5001,
+  protocol: 'https',
+  headers: {
+    authorization: auth
+  }
+})
+
+// console.log("check",process.env.URL_MUMBAI)
+
+// const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
 import {
   nftaddress, nftmarketaddress
@@ -27,6 +45,7 @@ export default function CreateItem() {
           progress: (prog) => console.log(`received: ${prog}`)
         }
       )
+      console.log("path",added.path)
       const url = `https://ipfs.infura.io/ipfs/${added.path}`
       setFileUrl(url)
     } catch (error) {
