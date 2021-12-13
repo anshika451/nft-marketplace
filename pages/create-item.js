@@ -45,8 +45,9 @@ export default function CreateItem() {
           progress: (prog) => console.log(`received: ${prog}`)
         }
       )
+      console.log("ädded",added);
       console.log("path",added.path)
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`
+      const url = `https://ipfs.infura.io:5001/api/v0/cat?arg=${added.path}`
       setFileUrl(url)
     } catch (error) {
       console.log('Error uploading file: ', error)
@@ -62,7 +63,7 @@ export default function CreateItem() {
     })
     try {
       const added = await client.add(data)
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`
+      const url = `https://ipfs.infura.io:5001/api/v0/cat?arg=${added.path}`
       /* after file is uploaded to IPFS, pass the URL to save it on Polygon */
       createSale(url)
     } catch (error) {

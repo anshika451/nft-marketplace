@@ -45,6 +45,7 @@ export default function Home() {
         name: meta.data.name,
         description: meta.data.description,
       }
+      console.log("item",item)
       return item}
       catch(err)
       {
